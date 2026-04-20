@@ -6,7 +6,11 @@
  * `replicate_api_key` and sent via the Authorization header on each request.
  */
 
-const BASE = '/api/replicate/v1';
+// Build a proxy URL — the Replicate path is passed as ?p= to avoid
+// catch-all routing issues on Vercel.
+function proxyUrl(replicatePath) {
+  return `/api/replicate?p=${encodeURIComponent(replicatePath)}`;
+}
 
 // Latest version of cuuupid/idm-vton (0513734a — published ~1 year ago).
 const IDM_VTON_VERSION = '0513734a452173b8173e907e3a59d19a36266e55b48528559432bd21c7d7e985';
@@ -34,7 +38,7 @@ export async function runIdmVton({ humanUrl, garmentUrl, category, description =
   }
 
   onStatus?.('starting');
-  const res = await fetch(`${BASE}/predictions`, {
+  const res = await fetch(proxyUrl('v1/predictions'), {
     method: 'POST',
     headers: {
       Authorization: `Token ${token}`,
@@ -65,7 +69,7 @@ async function pollPrediction(id, token, onStatus) {
       throw new Error('Try-on timed out after 5 minutes.');
     }
     await sleep(2000);
-    const res = await fetch(`${BASE}/predictions/${id}`, {
+    const res = await fetch(proxyUrl(`v1/predictions/${id}`), {
       headers: { Authorization: `Token ${token}` },
     });
     if (!res.ok) throw new Error(await friendlyError(res, 'Failed to check try-on status'));
