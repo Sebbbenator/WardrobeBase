@@ -10,7 +10,10 @@ export default async function handler(req, res) {
   // Build the Replicate URL from the catch-all path segments.
   const segments = req.query.path;
   const pathStr = Array.isArray(segments) ? segments.join('/') : (segments ?? '');
-  const targetUrl = `https://api.replicate.com/v1/${pathStr}`;
+  // pathStr already contains the full path including the v1 prefix
+  // (e.g. "v1/predictions" or "v1/models/cuuupid/idm-vton/predictions"),
+  // so we forward directly without adding an extra /v1/.
+  const targetUrl = `https://api.replicate.com/${pathStr}`;
 
   // Forward Authorization + Content-Type from the browser request.
   const forwardHeaders = {
