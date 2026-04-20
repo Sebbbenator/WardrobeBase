@@ -1,22 +1,22 @@
 import { useState } from 'react';
-import { getReplicateKey, setReplicateKey } from '../lib/replicate.js';
+import { getFashnKey, setFashnKey } from '../lib/fashn.js';
 import TopBar from '../components/TopBar.jsx';
 import Icon from '../components/Icon.jsx';
 
 export default function Settings() {
-  const [key, setKey] = useState(getReplicateKey());
+  const [key, setKey] = useState(getFashnKey());
   const [savedMsg, setSavedMsg] = useState('');
   const [show, setShow] = useState(false);
 
   function handleSave(e) {
     e.preventDefault();
-    setReplicateKey(key);
+    setFashnKey(key);
     setSavedMsg(key ? 'Saved.' : 'Cleared.');
     setTimeout(() => setSavedMsg(''), 2000);
   }
 
   function handleClear() {
-    setReplicateKey('');
+    setFashnKey('');
     setKey('');
     setSavedMsg('Cleared.');
     setTimeout(() => setSavedMsg(''), 2000);
@@ -29,21 +29,21 @@ export default function Settings() {
       <div className="space-y-5">
         <form onSubmit={handleSave} className="card space-y-4 p-5">
           <div>
-            <h2 className="font-serif text-xl text-ink">Replicate</h2>
+            <h2 className="font-serif text-xl text-ink">FASHN AI</h2>
             <p className="mt-1 text-sm text-ink-muted">
-              The key stays on this device. Needed for AI try-on.
+              Used for the AI outfit try-on. The key stays on this device only.
             </p>
           </div>
 
           <div>
-            <label className="label" htmlFor="replicate-key">API key</label>
+            <label className="label" htmlFor="fashn-key">API key</label>
             <div className="flex gap-2">
               <input
-                id="replicate-key"
+                id="fashn-key"
                 className="input flex-1"
                 type={show ? 'text' : 'password'}
                 autoComplete="off"
-                placeholder="r8_..."
+                placeholder="fa-..."
                 value={key}
                 onChange={(e) => setKey(e.target.value)}
               />
@@ -57,16 +57,16 @@ export default function Settings() {
               </button>
             </div>
             <p className="mt-2 text-xs text-ink-muted">
-              Get a key at{' '}
+              Sign up and get a free key at{' '}
               <a
-                href="https://replicate.com/account/api-tokens"
+                href="https://fashn.ai"
                 target="_blank"
                 rel="noreferrer"
                 className="text-ink underline underline-offset-2"
               >
-                replicate.com/account/api-tokens
+                fashn.ai
               </a>
-              .
+              {' '}→ Dashboard → API Keys.
             </p>
           </div>
 

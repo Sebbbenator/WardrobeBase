@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase, USER_PHOTO_ID } from '../lib/supabase.js';
 import { uploadImage, uploadImageAtPath } from '../lib/storage.js';
-import { getReplicateKey, runIdmVton } from '../lib/replicate.js';
+import { getFashnKey, runFashnTryOn } from '../lib/fashn.js';
 import TopBar from '../components/TopBar.jsx';
 import UploadDropzone from '../components/UploadDropzone.jsx';
 import CategorySelect from '../components/CategorySelect.jsx';
@@ -86,27 +86,27 @@ export default function OutfitBuilder() {
     if (!userPhotoUrl) return setTryOnError('Upload a full-body photo of yourself first.');
     if (!topId) return setTryOnError('Pick a top.');
     if (!bottomId) return setTryOnError('Pick bottoms.');
-    if (!getReplicateKey())
-      return setTryOnError('No Replicate API key yet — add it in Settings.');
+    if (!getFashnKey())
+      return setTryOnError('No FASHN API key yet — add it in Settings.');
 
     const top = items.find((i) => i.id === topId);
     const bottom = items.find((i) => i.id === bottomId);
 
     try {
       setStatus('top');
-      const afterTop = await runIdmVton({
+      const afterTop = await runFashnTryOn({
         humanUrl: userPhotoUrl,
         garmentUrl: top.image_url,
-        category: 'upper_body',
-        description: top.name,
+        category: 'tops',
+        onStatus: setStatus,
       });
 
       setStatus('bottom');
-      const afterBottom = await runIdmVton({
+      const afterBottom = await runFashnTryOn({
         humanUrl: afterTop,
         garmentUrl: bottom.image_url,
-        category: 'lower_body',
-        description: bottom.name,
+        category: 'bottoms',
+        onStatus: setStatus,
       });
 
       setStatus('saving');
@@ -140,10 +140,13 @@ export default function OutfitBuilder() {
 
   const busy = status !== '';
   const statusLabel = {
-    top: 'Applying top…',
-    bottom: 'Applying bottoms…',
+    top: 'Starting top…',
+    bottom: 'Starting bottoms…',
+    starting: 'Starting…',
+    in_queue: 'In queue…',
+    processing: 'Generating…',
     saving: 'Saving result…',
-  }[status];
+  }[status] ?? 'Working…';
 
   const ready = userPhotoUrl && topId && bottomId;
 

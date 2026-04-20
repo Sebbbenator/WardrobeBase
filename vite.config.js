@@ -4,10 +4,10 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   server: {
-    // Dev middleware: handle /api/replicate?p=<path> by forwarding to api.replicate.com/<path>
-    // This mirrors what api/replicate.js does on Vercel in production.
+    // Dev middleware: handle /api/fashn?p=<path> by forwarding to api.fashn.ai/<path>
+    // In production this is handled by api/fashn.js on Vercel.
     configureServer(server) {
-      server.middlewares.use('/api/replicate', async (req, res) => {
+      server.middlewares.use('/api/fashn', async (req, res) => {
         try {
           const url = new URL(req.url, 'http://localhost');
           const p = url.searchParams.get('p');
@@ -18,7 +18,7 @@ export default defineConfig({
             return;
           }
 
-          const targetUrl = `https://api.replicate.com/${p}`;
+          const targetUrl = `https://api.fashn.ai/${p}`;
 
           const headers = { 'Content-Type': 'application/json' };
           if (req.headers['authorization']) {
