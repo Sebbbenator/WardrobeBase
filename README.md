@@ -92,7 +92,20 @@ npm run dev
 
 Open [http://localhost:5173](http://localhost:5173).
 
-## 5. Use it on your phone
+## 5. Deploy to Vercel
+
+1. Push the project to a GitHub (or GitLab/Bitbucket) repo.
+2. Go to [vercel.com](https://vercel.com) → **Add New Project** → import the repo.
+3. Vercel auto-detects Vite. In the **Environment Variables** step, add:
+   - `VITE_SUPABASE_URL` → your Supabase project URL
+   - `VITE_SUPABASE_ANON_KEY` → your Supabase anon key
+4. Click **Deploy**.
+
+The `api/replicate/[...path].js` serverless function proxies Replicate calls in production — no extra setup needed. Your Replicate API key is still stored in your browser's localStorage (entered via the Settings page).
+
+**Supabase CORS** — after deploying, go to your Supabase project → **Settings → API → CORS Allowed Origins** and add your Vercel URL (e.g. `https://wardrobebase.vercel.app`).
+
+## 6. Use it on your phone
 
 The app is mobile-first and installable as a PWA (adds to your home screen, opens full-screen without the browser chrome).
 
@@ -103,7 +116,7 @@ The app is mobile-first and installable as a PWA (adds to your home screen, open
    - **Android / Chrome:** tap the ⋮ menu → **Install app** (or **Add to Home screen**).
 4. Open the icon from your home screen — it runs full-screen with safe-area support and bottom navigation.
 
-> The Replicate dev proxy lives in Vite, so the phone must point at your laptop's dev server. For a true "anywhere" deploy you'd need to host the app behind your own proxy (e.g. a Vercel serverless function) — that's out of scope for this single-user setup.
+> **Deployed to Vercel?** Just open your Vercel URL in Safari/Chrome on your phone and install from there — no local dev server needed.
 
 ---
 
