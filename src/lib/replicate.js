@@ -8,10 +8,9 @@
 
 const BASE = '/api/replicate/v1';
 
-// Pinned version of cuuupid/idm-vton (https://replicate.com/cuuupid/idm-vton).
-// Update this hash if the model publishes a new version you want to use.
-const IDM_VTON_VERSION =
-  'c871bb9b046607b680449ecbae55fd8c6d945e0a1948644bf2361b3d021d3ff4';
+// Use the model endpoint directly — no version pinning needed.
+// Always runs the latest published version of cuuupid/idm-vton.
+const IDM_VTON_MODEL_URL = `${BASE}/models/cuuupid/idm-vton/predictions`;
 
 export function getReplicateKey() {
   return localStorage.getItem('replicate_api_key') || '';
@@ -36,14 +35,14 @@ export async function runIdmVton({ humanUrl, garmentUrl, category, description =
   }
 
   onStatus?.('starting');
-  const res = await fetch(`${BASE}/predictions`, {
+  const res = await fetch(IDM_VTON_MODEL_URL, {
     method: 'POST',
     headers: {
       Authorization: `Token ${token}`,
       'Content-Type': 'application/json',
+      'Prefer': 'wait',
     },
     body: JSON.stringify({
-      version: IDM_VTON_VERSION,
       input: {
         human_img: humanUrl,
         garm_img: garmentUrl,
